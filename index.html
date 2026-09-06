@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Stockrace — cockpit</title>
+<title>stockracers</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root { --bg:#0b0b0b; --box:#171717; --box2:#1f1f1f; --fg:#f2f2f0; --muted:#8f8f8c; --dim:#5a5a58;
@@ -100,6 +100,7 @@
   .chip .ic, .chip > div:not(.ic):not(.glass):not(.tint) { position: relative; z-index: 2; }
   .chip .ic { position: absolute; right: -10px; bottom: -12px; width: 96px; height: 96px; z-index: 1; pointer-events: none; }
   .chip .ic img { width: 100%; height: 100%; object-fit: contain; opacity: .16; }
+  .chip .ic .tk, .sheet .ic .tk { position: absolute; right: 18px; bottom: 14px; font-size: 44px; font-weight: 800; letter-spacing: -.04em; opacity: .1; }
   .chip .p { font-size: 22px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; line-height: 1.1; }
   .chip .top { font-size: 11px; color: var(--muted); font-weight: 600; }
   .chip .r { display: block; justify-content: flex-start; font-size: 11px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; text-align: left; }
@@ -162,7 +163,8 @@
   .card img { position: absolute; right: 8px; top: 50%; width: 18px; height: 18px; transform: translateY(-50%); opacity: .22; pointer-events: none; }
   .card small { margin-right: 26px; }
   /* pot: brand mark of the stock it pays in, one colour, cross-fading */
-  .pot { position: relative; overflow: hidden; }
+  .pot { position: relative; overflow: hidden; justify-content: flex-start; gap: 10px; }
+  .pot > .s { max-width: 200px; line-height: 1.45; }
   .pot .mark, .pot .glow { position: absolute; right: -10px; bottom: -14px; width: 140px; height: 140px; object-fit: contain; opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
   .pot .mark.on { opacity: .1; }
   .pot .glow { filter: blur(22px); transform: scale(1.25); }
@@ -229,13 +231,13 @@
   .intro .btn { padding: 11px 20px; }
   body:not(.dev) .hint, body:not(.dev) #model { display: none; }
 </style>
-  <script type="module" crossorigin src="./assets/cockpit-Bv7nhLgu.js"></script>
+  <script type="module" crossorigin src="./assets/cockpit-Ca6T2caw.js"></script>
   <link rel="stylesheet" crossorigin href="./assets/cockpit-DgW0yCrm.css">
 </head>
 <body class="bg2">
 <div class="cockpit">
   <div class="box pill top">
-    <div class="title"><canvas class="logo" id="flag" width="96" height="115"></canvas><span class="brand">Stockrace</span><button class="how" id="how">How it works</button></div>
+    <div class="title"><canvas class="logo" id="flag" width="96" height="115"></canvas><span class="brand">stockracers</span><button class="how" id="how">How it works</button></div>
     <div class="tr"><button class="btn" id="copy"><span id="copyLabel">Copy address</span><code>0x7e8b…cba3</code></button></div>
   </div>
 
@@ -245,7 +247,7 @@
   <div class="box race"><div class="hd"><div class="k">Team race <span style="color:var(--dim)">· sum of each team's 5 stock moves</span></div><div class="s" id="model">A · lines</div></div><div class="plot"><canvas id="c"></canvas></div><div class="draft" id="draft"><div class="hdr"><div class="big" id="dTitle">Drafting run 042</div><div class="s" id="dSub">Dealing 20 stocks into 4 teams</div></div><div class="cols" id="cols"></div><div class="foot"><span id="dLeft">Race starts when the draft ends</span><span class="cd" id="dCd">0:58</span></div></div></div>
 
   <div class="box tower"><div class="k" style="margin-bottom:6px">Standings</div><div id="tower"></div></div>
-  <div class="box pot"><img class="glow" id="potGlow" alt="" /><img class="mark" id="potMark" alt="" /><div><div class="k">Pot</div><div class="v" id="pot">$3,824.17</div></div><div class="s"><span class="accent">↑ $4.1/min</span> · pays in <b id="potStock">NVDA</b> · <b id="buys">128</b> buys</div></div>
+  <div class="box pot"><img class="glow" id="potGlow" alt="" /><img class="mark" id="potMark" alt="" /><div><div class="k">Pot</div><div class="v" id="pot">$3,824.17</div></div><div class="s"><span class="accent" id="potRate">↑ $4.1/min</span> · pays in <b id="potStock">NVDA</b> · <b id="buys">128</b> <span id="buysLabel">buys</span></div></div>
 
   <div class="box hist min" id="hist"><div class="gridcard"><div class="k">Last 24 runs</div><div class="squares" id="squares"></div><div class="s" id="streak"><b>Cyan</b> won 3 in a row</div><button class="xp" id="xp" aria-label="Expand run history"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 1.5 7 5 3.5 8.5"/></svg></button></div><div class="chips"><div class="vp"><div class="track" id="runs"></div></div><button class="nav prev" id="navPrev">‹</button><button class="nav next" id="navNext">›</button></div></div>
   <div class="box feed"><div class="k">Live</div><div id="feed"></div></div>
@@ -255,10 +257,10 @@
 
 <div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
 <div class="modal" id="introM"><div class="sheet intro" style="--c: var(--t1)"><div class="tint"></div><button class="x" id="ix">×</button>
-  <div class="mh"><div class="k">Stockrace</div><div class="big">Hold it. Watch it. Get paid in stock.</div><div class="lede">Every 30 minutes, holders are split into four teams and race with real Robinhood stocks. The winning team gets that run's trading fees, bought as the team's best stock and sent straight to their wallets.</div></div>
+  <div class="mh"><div class="k">stockracers</div><div class="big">Hold it. Watch it. Get paid in stock.</div><div class="lede">Every 15 minutes, holders are split into four teams and race with real Robinhood stocks. The winning team gets that run's trading fees, bought as the team's best stock and sent straight to their wallets.</div></div>
   <div class="steps">
     <div class="step" style="--c: var(--t0)"><b>1 · The deal</b>20 Robinhood stocks are dealt into 4 groups and every holder into 4 teams. You watch the deal happen before each run.</div>
-    <div class="step" style="--c: var(--t1)"><b>2 · The run</b>For 30 minutes, each team's score is the sum of its 5 stocks' moves. Highest score at the close wins.</div>
+    <div class="step" style="--c: var(--t1)"><b>2 · The run</b>For 15 minutes, each team's score is the sum of its 5 stocks' moves. Highest score at the close wins.</div>
     <div class="step" style="--c: var(--t2)"><b>3 · The pot</b>Trading fees from the run buy the winning group's best-performing stock, as a real Robinhood stock token.</div>
     <div class="step" style="--c: var(--t3)"><b>4 · The payout</b>The stock is sent to the winning team's wallets by how much each one holds. Nothing to claim, nothing to connect.</div>
   </div>
@@ -268,7 +270,7 @@
     <div><span>Teams and stock groups are <b>re-dealt every run</b>. Losing one run costs nothing; the next deal starts in a minute.</span></div>
     <div><span>Only holding counts. Selling before the close takes you out of that run's team.</span></div>
   </div></div>
-  <div class="cta"><a class="xfollow" href="#"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow Stockrace on X</a><button class="btn" id="igo">Got it</button></div>
+  <div class="cta"><a class="xfollow" href="#"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>Follow stockracers on X</a><button class="btn" id="igo">Got it</button></div>
 </div></div>
 </body>
 </html>
